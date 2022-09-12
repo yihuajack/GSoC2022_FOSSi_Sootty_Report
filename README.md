@@ -16,7 +16,7 @@ In this milestone, the values of vector changes can be displayed in different nu
 
 Code:
 
-1. [Add numeral system for vector change data by yihuajack · Pull Request #46 · Ben1152000/sootty (github.com)](https://github.com/Ben1152000/sootty/pull/46)
+1. [Merged] [Add numeral system for vector change data by yihuajack · Pull Request #46 · Ben1152000/sootty (github.com)](https://github.com/Ben1152000/sootty/pull/46)
 
 Deliverables:
 
