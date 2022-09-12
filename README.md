@@ -12,7 +12,7 @@ Sootty is a terminal-based graphical waveform viewer that reads a Value Change D
 
 ### Milestone 1: **Add Numeral System**
 
-In this milestone, the values of vector changes can be displayed in different numeral systems with radix from 2 to 36, instead of only decimal systems.
+In this milestone, the values of vector changes can be displayed in different numeral systems with radix from 2 to 36 instead of only decimal systems.
 
 Code:
 
@@ -65,7 +65,7 @@ Code:
 
 1. [Merged] [Add a color list for breakpoints by yihuajack · Pull Request #59 · Ben1152000/sootty (github.com)](https://github.com/Ben1152000/sootty/pull/59)
 2. [Merged] [Add feature: Print breakpoint table by yihuajack · Pull Request #61 · Ben1152000/sootty (github.com)](https://github.com/Ben1152000/sootty/pull/61)
-3. [Open] [WireGroup's get_names for different scopes by yihuajack · Pull Request #64 · Ben1152000/sootty (github.com)](https://github.com/Ben1152000/sootty/pull/64)
+3. [Not merged yet at the time of submission] [WireGroup's get_names for different scopes by yihuajack · Pull Request #64 · Ben1152000/sootty (github.com)](https://github.com/Ben1152000/sootty/pull/64)
 
 Deliverables:
 
