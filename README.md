@@ -4,7 +4,7 @@ Google Summer of Code (GSoC) 2022 Free and Open Source Silicon (FOSSi) Foundatio
 
 ## Introduction
 
-Sootty is a terminal-based graphical waveform viewer. It relies on `pyvcd` to read and parse the Value Change Dump (VCD) files and `lark` to provide a command-line query language to specify start points, end points, breakpoints, etc. To display output SVG pictures, only `kitty` and `iterm` terminals are applicable.
+Sootty is a terminal-based graphical waveform viewer that reads a Value Change Dump (VCD) file and generates an SVG picture in the terminal. Sootty is for hardware designers to conveniently and quickly view the results of their simulations. It relies on `pyvcd` to read and parse the VCD files and `lark` to provide a command-line query language to specify start points, end points, breakpoints, etc. To display output SVG pictures, only `kitty` and `iterm` terminals are applicable. The following diagram shows the main flow of Sootty from the inputs and arguments to outputs. The kernel class is the `WireTrace` class containing all the valuable information from the VCD file. The blue highlighted arguments in `parse_args()` are newly added.
 
 ![img](sootty-main.drawio.png)
 
@@ -12,7 +12,11 @@ Sootty is a terminal-based graphical waveform viewer. It relies on `pyvcd` to re
 
 ### Milestone 1: **Add Numeral System**
 
-Code: [Merged] [Pull requests #46 · Ben1152000/sootty](https://github.com/Ben1152000/sootty/pull/46)
+In this milestone, the values of vector changes can be displayed in different numeral systems with radix from 2 to 36, instead of only decimal systems.
+
+Code:
+
+1. [Add numeral system for vector change data by yihuajack · Pull Request #46 · Ben1152000/sootty (github.com)](https://github.com/Ben1152000/sootty/pull/46)
 
 Deliverables:
 
@@ -39,7 +43,12 @@ def dec2anybase(input, base, width):
 
 ### Milestone 2: Add EVCD to VCD Converter
 
-Code: [Merged] [Pull requests #52 · Ben1152000/sootty](https://github.com/Ben1152000/sootty/pull/52), [Merged] [Pull requests #55 · Ben1152000/sootty](https://github.com/Ben1152000/sootty/pull/55)
+In this milestone, Sootty can convert extended VCD (EVCD) files into VCD files before parsing them by `pyvcd`. EVCD is a waveform format standardized by [1800-2017 - IEEE Standard for SystemVerilog--Unified Hardware Design, Specification, and Verification Language | IEEE Standard | IEEE Xplore](https://ieeexplore.ieee.org/document/8299595). The converter can also do basic syntax checking of EVCD.
+
+Code:
+
+1. [Merged] [Create example4.evcd by yihuajack · Pull Request #52 · Ben1152000/sootty (github.com)](https://github.com/Ben1152000/sootty/pull/52)
+2. [Merged] [Add Extended VCD (EVCD) support by yihuajack · Pull Request #55 · Ben1152000/sootty (github.com)](https://github.com/Ben1152000/sootty/pull/55)
 
 Deliverables:
 
@@ -50,7 +59,13 @@ Deliverables:
 
 ### Milestone 3: Add Breakpoints Colors and Table Printer
 
-Code: [Pull requests #59 · Ben1152000/sootty](https://github.com/Ben1152000/sootty/pull/59), [Pull requests #61 · Ben1152000/sootty](https://github.com/Ben1152000/sootty/pull/61), [Pull Request #64 · Ben1152000/sootty](https://github.com/Ben1152000/sootty/pull/64)
+In this milestone, Sootty can display breakpoints in different colors. It can also print a table of wire values when breakpoints are inserted.
+
+Code:
+
+1. [Merged] [Add a color list for breakpoints by yihuajack · Pull Request #59 · Ben1152000/sootty (github.com)](https://github.com/Ben1152000/sootty/pull/59)
+2. [Merged] [Add feature: Print breakpoint table by yihuajack · Pull Request #61 · Ben1152000/sootty (github.com)](https://github.com/Ben1152000/sootty/pull/61)
+3. [Open] [WireGroup's get_names for different scopes by yihuajack · Pull Request #64 · Ben1152000/sootty (github.com)](https://github.com/Ben1152000/sootty/pull/64)
 
 Deliverables:
 
@@ -65,31 +80,33 @@ Deliverables:
 **Others**
 
 - Code reviews of peers’ work
-- Fix encoding bug: [Merged] [Pull Request #63 · Ben1152000/sootty](https://github.com/Ben1152000/sootty/pull/63)
+- Fix encoding bug: [Merged] [fix: Windows UnicodeDecodeError: 'gbk' codec by yihuajack · Pull Request #63 · Ben1152000/sootty (github.com)](https://github.com/Ben1152000/sootty/pull/63)
 
 ## Discussions
 
 ### Challenges
 
-1. The "X" or "x" values need to be carefully considered when converting radix. The preceding zeros are complemented according to the wire widths except for the default radix 10.
-2. The referenced `evcd2vcd` done by `gtkwave` written in C has some problems and issues, so our work needs to re-implement in a pythonic way passing different test examples.
-3. If `-b` and `--btable` are given simultaneously, to print the breakpoint table is done after displaying the SVG by `Popen`.
-4. The function `print_breakpoints` traverse all the wires by `get_wires` recursively once to print the wire information directly. If a better formatting is needed, the column widths have to be determined by the maximum values of each columns through `get_names`, so that the wire groups needs to be traversed twice. If we want to determine the hierarchy of scopes to apply dot references like `testbench.pe8` when printing, the wire groups also needs to be traverse once more.
+1. When converting radix, the "X" or "x" values must be carefully considered. The preceding zeros are complemented according to the wire widths except for the default radix 10.
+2. The referenced `evcd2vcd` done by `gtkwave` written in C has some problems and issues, so our work needs to re-implement it in a pythonic way, passing different test examples.
+3. Among different waveform formats except for VCD, EVCD is the simplest one, so a converter can be directly implemented in Python embedded in Sootty's `from_vcd` function. However, other waveform formats like `fsdb` are much more complicated than EVCD.
+4. If `-b` and `--btable` are given simultaneously, printing the breakpoint table is done after displaying the SVG by `Popen`.
+5. The function `print_breakpoints` traverses all the wires by `get_wires` recursively once to print the wire information directly. If better formatting is needed, the column widths must be determined by the maximum values of each column through `get_names`, so the wire groups must be traversed twice. If we want to determine the hierarchy of scopes to apply dot references like `testbench.pe8` when printing, the wire groups also need to be traversed once more.
+6. It is the first time for me to cooperate with people in different time zones constantly, so planning schedules and remembering them are a challenge.
 
 ### Learnings
 
 1. Practiced using Git and GitHub more
 2. Improved my communication and cooperation skills on remote
 3. Have developed a deeper understanding of waveform formats
-4. Learned a lot about object oriented programming (OOP) in Python
+4. Learned a lot about object-oriented programming (OOP) in Python
 5. Learned a lot about Python `io` library and miscellaneous stuff
 
 ### Future Work 
 
 1. Add scope information in the output SVG
-2. Explore the opportunities in extending the compatibility across different platforms
+2. Explore the opportunities to extend the compatibility across different platforms
 3. Explore an appropriate way to support more complex waveform formats like `fsdb`
-4. Find a smart and efficient way to format the breakpoint table prettier and apply dot references on scopes.
+4. Find an innovative and efficient way to format the breakpoint table prettier and apply dot references on the scope
 
 ## Conclusion
 
